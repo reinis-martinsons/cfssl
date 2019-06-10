@@ -45,6 +45,7 @@ import (
 	"github.com/cloudflare/cfssl/cli/serve"
 	"github.com/cloudflare/cfssl/cli/sign"
 	"github.com/cloudflare/cfssl/cli/version"
+	"github.com/cloudflare/cfssl/cli/savecsr"
 
 	_ "github.com/go-sql-driver/mysql" // import to support MySQL
 	_ "github.com/lib/pq"              // import to support Postgres
@@ -76,6 +77,7 @@ func main() {
 		"info":           info.Command,
 		"print-defaults": printdefaults.Command,
 		"revoke":         revoke.Command,
+		"savecsr":        savecsr.Command,
 	}
 
 	// If the CLI returns an error, exit with an appropriate status

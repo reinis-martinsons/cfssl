@@ -59,6 +59,10 @@ SELECT %s FROM ocsp_responses
 	selectOCSPSQL = `
 SELECT %s FROM ocsp_responses
   WHERE (serial_number = ? AND authority_key_identifier = ?);`
+
+	insertCSRSQL = `
+INSERT INTO csrs (csr)
+  VALUES (:csr);`
 )
 
 // Accessor implements certdb.Accessor interface.
@@ -350,3 +354,31 @@ func (d *Accessor) UpsertOCSP(serial, aki, body string, expiry time.Time) error 
 
 	return err
 }
+
+// InsertCSR puts a certdb.CSRRecord into db.
+func (d *Accessor) InsertCSR(sr certdb.CSRRecord) error {
+	err := d.checkDB()
+	if err != nil {
+		return err
+	}
+
+	res, err := d.db.NamedExec(insertCSRSQL, &certdb.CSRRecord{
+		CSR:       sr.CSR,
+	})
+	if err != nil {
+		return wrapSQLError(err)
+	}
+
+	numRowsAffected, err := res.RowsAffected()
+
+	if numRowsAffected == 0 {
+		return cferr.Wrap(cferr.CertStoreError, cferr.InsertionFailed, fmt.Errorf("failed to insert the CSR record"))
+	}
+
+	if numRowsAffected != 1 {
+		return wrapSQLError(fmt.Errorf("%d rows are affected, should be 1 row", numRowsAffected))
+	}
+
+	return err
+}
+

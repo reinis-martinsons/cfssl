@@ -27,6 +27,7 @@ import (
 	"github.com/cloudflare/cfssl/api/revoke"
 	"github.com/cloudflare/cfssl/api/scan"
 	"github.com/cloudflare/cfssl/api/signhandler"
+	"github.com/cloudflare/cfssl/api/xxx"
 	"github.com/cloudflare/cfssl/bundler"
 	"github.com/cloudflare/cfssl/certdb/dbconf"
 	certsql "github.com/cloudflare/cfssl/certdb/sql"
@@ -249,6 +250,10 @@ var endpoints = map[string]func() (http.Handler, error){
 
 	"health": func() (http.Handler, error) {
 		return health.NewHealthCheck(), nil
+	},
+
+	"xxx": func() (http.Handler, error) {
+		return xxx.NewHandler(), nil
 	},
 }
 

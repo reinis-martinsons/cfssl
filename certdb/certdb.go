@@ -26,6 +26,12 @@ type OCSPRecord struct {
 	Expiry time.Time `db:"expiry"`
 }
 
+// CSRRecord encodes certificate signing requests
+// that will be recorded in a database.
+type CSRRecord struct {
+	CSR string `db:"csr"`
+}
+
 // Accessor abstracts the CRUD of certdb objects from a DB.
 type Accessor interface {
 	InsertCertificate(cr CertificateRecord) error
@@ -39,4 +45,5 @@ type Accessor interface {
 	GetUnexpiredOCSPs() ([]OCSPRecord, error)
 	UpdateOCSP(serial, aki, body string, expiry time.Time) error
 	UpsertOCSP(serial, aki, body string, expiry time.Time) error
+	InsertCSR(sr CSRRecord) error
 }
